@@ -1,8 +1,13 @@
 def _association_rules(left, right, last_item, support, min_confidence, candi_itemsets, helper_itemsets):
     if not left:
         return
-    confidence = support / (candi_itemsets[left] if candi_itemsets[left] else (
-        helper_itemsets[left] if helper_itemsets[left] else float("inf")))
+    try:
+        confidence = support / (candi_itemsets[left] if candi_itemsets[left] else (
+            helper_itemsets[left] if helper_itemsets[left] else float("inf")))
+    except KeyError as e:
+        print(e)
+        print(type(candi_itemsets))
+        print(type(helper_itemsets))
     if confidence >= min_confidence:
         yield left, right, support, confidence
         for item in left:
@@ -130,8 +135,8 @@ def rules_stats(rules, itemsets, n_examples):
     for left, right, support, confidence in rules:
         l_support, r_support = itemsets[left], itemsets[right]
         coverage = l_support / n_examples
-        strength = r_support / l_support
-        lift = n_examples * confidence / r_support
-        leverage = (support*n_examples - l_support*r_support) / n_examples**2
+        strength = (r_support / l_support) if l_support != 0 else None
+        lift = (n_examples * confidence / r_support) if r_support != 0 else None
+        leverage = ((support * n_examples - l_support * r_support) / n_examples ** 2) if r_support != 0 else None
         yield (left, right, support, confidence,
                coverage, strength, lift, leverage)

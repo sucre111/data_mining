@@ -101,24 +101,25 @@ class RelativeSupportApriori:
 
 if __name__ == '__main__':
     from pymining import itemmining
-    import orangecontrib.associate.fpgrowth as oaf
+    import gen_rules
 
-    # data = [(1, 2, 3), (3, 4), (1, 2, 3, 4, 5, 6, 7), (6, 7), (3, 4, 5, 6), (1, 2), (3, 4, 6, 7), (1, 2),
-    #         (1, 3, 4, 5, 6), (1, 2)]
-    # ds = data
-    # min_sup = 2
-    # max_sup = 4
-    # r_sup = 0.7
-    # min_conf = 0.6
-    #
-    # relim_input = itemmining.get_relim_input(data)
-    # freq_itemsets = itemmining.relim(relim_input, min_support=max_sup)
-    #
-    # rsa = RelativeSupportApriori(ds, min_sup, max_sup, r_sup)
-    # candi_itemsets, helper_itemsets = rsa.get_candidate_itemsets()
-    #
-    # helper_itemsets = dict(helper_itemsets.items() | freq_itemsets.items())
-    # rules = gen_rules.association_rules(candi_itemsets, helper_itemsets, min_conf)
+    data = [(1, 2, 3), (3, 4), (1, 2, 3, 4, 5, 6, 7), (6, 7), (3, 4, 5, 6), (1, 2), (3, 4, 6, 7), (1, 2),
+            (1, 3, 4, 5, 6), (1, 2)]
+    ds = data
+    min_sup = 2
+    max_sup = 4
+    r_sup = 0.7
+    min_conf = 0.6
 
-    # rules_info = list(fpgrowth.rules_stats(rules, dict(helper_itemsets.items() | candi_itemsets.items()), 10))  # 统计评估信息
-    # print(rules_info)
+    relim_input = itemmining.get_relim_input(ds)
+    freq_itemsets = itemmining.relim(relim_input, min_support=max_sup)
+
+    rsa = RelativeSupportApriori(ds, min_sup, max_sup, r_sup)
+    candi_itemsets, helper_itemsets = rsa.get_candidate_itemsets()
+
+    helper_itemsets = defaultdict(int, helper_itemsets.items() | freq_itemsets.items())
+    rules = gen_rules.association_rules(candi_itemsets, helper_itemsets, min_conf)
+
+    rules_info = list(
+        gen_rules.rules_stats(rules, defaultdict(int, helper_itemsets.items() | candi_itemsets.items()), 10))  # 统计评估信息
+    rules_info
