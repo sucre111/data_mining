@@ -50,8 +50,6 @@ class RelativeSupportApriori:
     def rsaa_gen(self, itemsets, k):
         if k == 2:
             candidate = [frozenset(sorted(x.union(y))) for x in itemsets for y in itemsets if x != y]
-            # candidate = [tuple(sorted([x[0], y[0]])) for x in itemsets for y in itemsets if
-            #              len((x[0], y[0])) == k and x[0] != y[0]]
         else:
             candidate = list(itertools.combinations(itemsets, 2))
             candidate = [set(i[0]).union(i[1]) for i in candidate]
